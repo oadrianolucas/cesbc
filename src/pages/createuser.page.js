@@ -1,7 +1,7 @@
-import { Login } from "@/components/Login";
+import { CreateUser } from "@/components/CreateUser";
 import { Navbar } from "@/components/common/Navbar";
 
-export default function LoginPage() {
+export default function CreateUserPage() {
   return (
     <>
       <Navbar />
@@ -9,7 +9,7 @@ export default function LoginPage() {
         className="flex flex-col items-center
       justify-center px-4 py-8 mx-auto"
       >
-        <Login />
+        <CreateUser />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import { Sidebar } from "@/components/common/Sidebar";
 
-export default function dashboard() {
+export default function DashboardPage() {
   return (
     <div className="h-screen bg-gray-100">
       <Sidebar />
