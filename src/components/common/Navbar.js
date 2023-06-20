@@ -1,19 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Image from "next/image";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = () => {
+    const token = localStorage.getItem("jwt");
+    // aqui você pode adicionar a validação do token JWT
+    if (token) {
+      setIsTokenValid(true);
+    }
+  };
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
-  const links = [
+  let links = [
     { id: 1, title: "Início", link: "/" },
-    { id: 2, title: "Entrar", link: "login" },
-    { id: 3, title: "Cadastre-se", link: "#contact" },
+    { id: 2, title: "Entrar", link: "/login" },
+    { id: 3, title: "Cadastre-se", link: "/createuser" },
   ];
+
+  if (isTokenValid) {
+    links = links.filter(
+      (link) => link.title !== "Entrar" && link.title !== "Cadastre-se"
+    );
+  }
   return (
     <nav className="bg-blue-900">
       <div className="container mx-auto">
@@ -26,6 +45,7 @@ export function Navbar() {
                   alt="Picture of the author"
                   width={100}
                   height={100}
+                  priority={false}
                 />
               </a>
             </div>
@@ -43,7 +63,7 @@ export function Navbar() {
                     href={link.link}
                     className="text-white hover:bg-blue-800 
                     hover:text-white px-3 py-2 
-                    rounded-md text-sm font-medium"
+                    rounded-md text-lg font-medium"
                   >
                     {link.title}
                   </a>

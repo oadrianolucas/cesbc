@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { HiMoon, HiSun } from "react-icons/hi";
 const DarkModeToggle = () => {
   const [theme, setTheme] = useState("light");
 
@@ -29,9 +29,9 @@ const DarkModeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="focus:outline-none p-2 bg-gray-300 dark:bg-gray-600 rounded"
+      className="focus:outline-none p-2 text-lg text-white rounded"
     >
-      {theme === "light" ? "🌙" : "☀️"}
+      {theme === "light" ? <HiMoon /> : <HiSun />}
     </button>
   );
 };

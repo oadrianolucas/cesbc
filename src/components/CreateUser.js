@@ -1,6 +1,80 @@
+import React, { useState } from "react";
+import { createUser } from "../pages/api/cursosesportivos";
+import ToastComponent from "./ui/ToastComponent ";
+
+function calculateAge(birth) {
+  const birthDate = new Date(birth);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 export function CreateUser() {
+  const [userData, setUserData] = useState({
+    email: "",
+    birth: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
+  const showToast = (message, type) => {
+    setToast({
+      show: true,
+      message,
+      type,
+    });
+    setTimeout(() => setToast({ show: false, message: "", type: "" }), 5000);
+  };
+
+  const handleInputChange = (e) => {
+    setUserData({
+      ...userData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const submitUser = async (e) => {
+    e.preventDefault();
+
+    if (calculateAge(userData.birth) < 18) {
+      showToast("Você deve ter pelo menos 18 anos para se registrar.", "error");
+      return;
+    }
+
+    if (userData.password !== userData.confirmPassword) {
+      showToast("As senhas não correspondem.", "error");
+      return;
+    }
+
+    try {
+      const res = await createUser(userData);
+
+      if (res.status === 200) {
+        showToast("Usuário criado com sucesso!", "success");
+        window.location.href = "/outra-pagina";
+      } else {
+        showToast(`Erro ao criar usuário: ${res.status}`, "error");
+      }
+    } catch (error) {
+      showToast("Erro ao criar usuário.", "error");
+    }
+  };
+
   return (
     <>
+      {toast.show && (
+        <ToastComponent message={toast.message} type={toast.type} />
+      )}
       <div
         className="w-full bg-white rounded-lg
         shadow  md:mt-0 sm:max-w-md
@@ -13,7 +87,7 @@ export function CreateUser() {
           >
             Criar nova conta
           </h2>
-          <form className="space-y-4 md:space-y-6">
+          <form className="space-y-4 md:space-y-6" onSubmit={submitUser}>
             <div>
               <label className="block mb-2 text-md font-medium text-gray-400">
                 E-mail
@@ -25,6 +99,10 @@ export function CreateUser() {
                 block w-full p-2.5
                 placeholder-gray-400"
                 type="email"
+                name="email"
+                value={userData.email}
+                onChange={handleInputChange}
+                required
               />
             </div>
             <div>
@@ -38,6 +116,10 @@ export function CreateUser() {
                 block w-full p-2.5
                 placeholder-gray-400"
                 type="date"
+                name="birth"
+                value={userData.birth}
+                onChange={handleInputChange}
+                required
               />
             </div>
             <div>
@@ -51,6 +133,10 @@ export function CreateUser() {
                 block w-full p-2.5
                 placeholder-gray-400"
                 type="password"
+                name="password"
+                value={userData.password}
+                onChange={handleInputChange}
+                required
               />
             </div>
             <div>
@@ -64,6 +150,10 @@ export function CreateUser() {
                 block w-full p-2.5
                 placeholder-gray-400"
                 type="password"
+                name="confirmPassword"
+                value={userData.confirmPassword}
+                onChange={handleInputChange}
+                required
               />
             </div>
             <div>
